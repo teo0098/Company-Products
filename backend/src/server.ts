@@ -1,10 +1,9 @@
-import express, { Request, Response } from "express";
-import sendXML from "xml";
+import express from "express";
 import cors from "cors";
 
-import { Connection } from "./interfaces/Connection";
-import { connectToDb } from "./middlewares/connectToDb";
-import { Product } from "./types/Product";
+import productsRoutes from "./routes/products";
+import categoriesRoutes from "./routes/categories";
+import vendorsRoutes from "./routes/vendors";
 
 const server = express();
 
@@ -15,39 +14,12 @@ server.use(
   })
 );
 
-server.get("/", connectToDb, async (req: Request, res: Response) => {
-  try {
-    const connection = (req as Connection).conn;
-    const [products] = await connection.execute(
-      `SELECT products.name, products.description, products.price, products.picture, categories.category, vendors.vendor 
-      FROM products
-      JOIN categories ON products.category_id=categories.id 
-      JOIN vendors ON products.vendor_id=vendors.id`
-    );
-    const XMLObject: { products: Array<{ product: Array<{}> }> } = {
-      products: [],
-    };
-    (products as Product[]).forEach((product) => {
-      XMLObject.products.push({
-        product: [
-          { name: product.name },
-          { description: product.description },
-          { price: product.price },
-          { picture: product.picture },
-          { category: product.category },
-          { vendor: product.vendor },
-        ],
-      });
-    });
-    res.setHeader("Content-Type", "text/xml");
-    res.status(200).send(sendXML(XMLObject));
-  } catch {
-    res.status(500).json({ error: "Unable to retrieve products" });
-  }
-});
+server.use(productsRoutes);
+server.use(categoriesRoutes);
+server.use(vendorsRoutes);
 
 server.get("*", (_, res) => {
-  res.json({ error: "Page Not Found" });
+  res.status(404).json({ error: "Page Not Found" });
 });
 
 server.listen(5000, () => {

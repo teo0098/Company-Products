@@ -1,21 +1,34 @@
+import { Category } from "../../../types/Category";
+import { Product } from "../../../types/Product";
+import { Vendor } from "../../../types/Vendor";
 import { ActionStatusTypes } from "./ActionStatusTypes";
+
+export type Data = {
+  products: Product[];
+  categories: Category[];
+  vendors: Vendor[];
+};
 
 export const initialState = {
   loading: false,
   error: null,
-  data: null,
+  data: {
+    products: [],
+    categories: [],
+    vendors: [],
+  },
 };
 
 type State = {
   loading?: boolean;
   error?: string | null;
-  data?: any;
+  data?: Data;
 };
 
 type Action = {
   type: string;
   error?: string;
-  data?: any;
+  data?: Data;
 };
 
 export const reducer = (state: State, action: Action) => {
