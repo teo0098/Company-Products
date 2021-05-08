@@ -1,22 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dropdown as DropDown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import useDropDown from "../../customHooks/useDropdown";
 
-const Dropdown: React.FC<{ name: string; data: any[] }> = ({ name, data }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+import { DropdownInterface } from "../../interfaces/Dropdown";
 
-  const toggle = () => setDropdownOpen((prevState) => !prevState);
+const Dropdown: React.FC<DropdownInterface> = ({
+  data,
+  dispatchFilter,
+  id,
+  filters,
+}) => {
+  const { handleOnChange, dropdownOpen, toggle, renderSelection } = useDropDown(
+    id,
+    dispatchFilter
+  );
 
   return (
     <DropDown isOpen={dropdownOpen} toggle={toggle}>
-      <DropdownToggle caret> {name} </DropdownToggle>
+      <DropdownToggle caret> {renderSelection(filters)} </DropdownToggle>
       <DropdownMenu>
+        <DropdownItem onClick={() => handleOnChange("*")}>
+          {" "}
+          Wszystko{" "}
+        </DropdownItem>
         {data.map((value) => (
-          <DropdownItem> {value} </DropdownItem>
+          <DropdownItem key={value} onClick={() => handleOnChange(value)}>
+            {" "}
+            {value}{" "}
+          </DropdownItem>
         ))}
       </DropdownMenu>
     </DropDown>

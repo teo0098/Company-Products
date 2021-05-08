@@ -36,17 +36,17 @@ export const getStaticProps: GetStaticProps = async () => {
     const { data: productsData, status: productsStatus } = await axios.get(
       "http://localhost:5000/products"
     );
-    if (productsStatus === 500) error = productsData;
+    if (productsStatus === 500) error = productsData.error;
     else if (productsStatus === 200) data.products = productsData;
     const { data: categoriesData, status: categoriesStatus } = await axios.get(
       "http://localhost:5000/categories"
     );
-    if (categoriesStatus === 500) error = categoriesData;
+    if (categoriesStatus === 500) error = categoriesData.error;
     else if (categoriesStatus === 200) data.categories = categoriesData;
     const { data: vendorsData, status: vendorsStatus } = await axios.get(
       "http://localhost:5000/vendors"
     );
-    if (vendorsStatus === 500) error = vendorsData;
+    if (vendorsStatus === 500) error = vendorsData.error;
     else if (vendorsStatus === 200) data.vendors = vendorsData;
   } catch {
     error = Errors.STH_WENT_WRONG;

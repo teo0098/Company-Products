@@ -7,9 +7,12 @@ import {
   Button,
 } from "reactstrap";
 
-import { Product as ProductType } from "../../types/Product";
+import { Product as ProductType } from "../../../types/Product";
+import useProduct from "../../customHooks/useProduct";
 
 const Product: React.FC<{ product: ProductType }> = ({ product }) => {
+  const { handleRedirectToProductDetails } = useProduct();
+
   return (
     <Card key={product.name[0]}>
       <CardImg top width="100%" src={product.picture[0]} alt="Card image cap" />
@@ -24,7 +27,9 @@ const Product: React.FC<{ product: ProductType }> = ({ product }) => {
         <CardSubtitle tag="h6" className="mb-2 text-muted">
           Wydawca: {product.vendor[0]}
         </CardSubtitle>
-        <Button>Szczegóły</Button>
+        <Button onClick={() => handleRedirectToProductDetails(product.name[0])}>
+          Szczegóły
+        </Button>
       </CardBody>
     </Card>
   );

@@ -1,6 +1,6 @@
 import xml from "xml2js";
-
 import { useEffect, useReducer } from "react";
+
 import axios from "../axiosInstance";
 import { Errors } from "../messages/Errors";
 import { Product } from "../../types/Product";
@@ -9,6 +9,10 @@ import {
   reducer,
   Data,
 } from "../useReducers/actionStatus/actionStatus";
+import {
+  initialState as filtersInitialState,
+  reducer as filtersReducer,
+} from "../useReducers/filters/filters";
 import { ActionStatusTypes } from "../useReducers/actionStatus/ActionStatusTypes";
 import { Category } from "../../types/Category";
 import { Vendor } from "../../types/Vendor";
@@ -22,6 +26,10 @@ const useData = (
   error: string | null
 ) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [filters, dispatchFilters] = useReducer(
+    filtersReducer,
+    filtersInitialState
+  );
 
   useEffect(() => {
     if (error === null) {
@@ -61,27 +69,48 @@ const useData = (
     }
   }, []);
 
-  /*
   useEffect(() => {
-    const getOffers = async () => {
+    const getProducts = async () => {
       dispatch({ type: ActionStatusTypes.LOADING });
       try {
-        const { data, status } = await axios.get("http://localhost:5000/");
+        const { data: products, status } = await axios.get(
+          `http://localhost:5000/products?category=${encodeURIComponent(
+            filters.category!
+          )}&vendor=${encodeURIComponent(
+            filters.vendor!
+          )}&sortByPrice=${encodeURIComponent(filters.sortByPrice!)}`
+        );
         if (status === 500)
-          return dispatch({ type: ActionStatusTypes.ERROR, error: data });
-        dispatch({ type: ActionStatusTypes.SUCCESS, data });
+          return dispatch({
+            type: ActionStatusTypes.ERROR,
+            error: products.error,
+          });
+        xml.parseString(products, function (err, results) {
+          if (err)
+            return dispatch({
+              type: ActionStatusTypes.ERROR,
+              error: Errors.STH_WENT_WRONG,
+            });
+          dispatch({
+            type: ActionStatusTypes.SUCCESS,
+            data: {
+              products: results.products.product,
+              categories: state.data!.categories,
+              vendors: state.data!.vendors,
+            },
+          });
+        });
       } catch {
-        dispatch({
+        return dispatch({
           type: ActionStatusTypes.ERROR,
           error: Errors.STH_WENT_WRONG,
         });
       }
     };
-    getOffers();
-  }, []);
-  */
+    if (filters.searchingStarted) getProducts();
+  }, [filters]);
 
-  return { state };
+  return { state, dispatchFilters, filters };
 };
 
 export default useData;
