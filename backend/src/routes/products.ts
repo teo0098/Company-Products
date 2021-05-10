@@ -27,7 +27,7 @@ router.get("/products", connectToDb, async (req: Request, res: Response) => {
       WHERE categories.category LIKE ? AND vendors.vendor LIKE ? ${orderBy}`,
       [category, vendor]
     );
-    if (!products || products.length === 0) throw new Error();
+    if (!products) throw new Error();
     const XMLObject: {
       products: Array<{ product: Array<Partial<Product>> }>;
     } = {
