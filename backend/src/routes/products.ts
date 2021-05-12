@@ -17,8 +17,14 @@ router.get("/products", connectToDb, async (req: Request, res: Response) => {
       category = `${req.query.category}`;
     if (req.query.vendor && req.query.vendor !== "*")
       vendor = `${req.query.vendor}`;
-    if (req.query.sortByPrice === "true")
+    if (req.query.sortByPrice === "DESC")
       orderBy = "ORDER BY products.price DESC";
+    else if (req.query.sortByPrice === "ASC")
+      orderBy = "ORDER BY products.price ASC";
+    if (req.query.sortByVendor === "DESC")
+      orderBy = "ORDER BY products.name DESC";
+    else if (req.query.sortByVendor === "ASC")
+      orderBy = "ORDER BY products.name ASC";
     const [products] = await connection.execute(
       `SELECT products.name, products.price, products.picture, categories.category, vendors.vendor 
       FROM products

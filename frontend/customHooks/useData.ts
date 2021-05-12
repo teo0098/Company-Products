@@ -78,7 +78,9 @@ const useData = (
             filters.category!
           )}&vendor=${encodeURIComponent(
             filters.vendor!
-          )}&sortByPrice=${encodeURIComponent(filters.sortByPrice!)}`
+          )}&sortByPrice=${encodeURIComponent(
+            filters.sortByPrice!
+          )}&sortByVendor=${encodeURIComponent(filters.sortByVendor!)}`
         );
         if (status === 500)
           return dispatch({
