@@ -14,7 +14,7 @@ const Products: React.FC<ProductsInterface> = ({ error, data }) => {
 
   return (
     <div className={styles.Products}>
-      {error === null && state.error === null ? (
+      {error === null && state.error === null && state.data ? (
         <div className={styles.Products__wrapper}>
           <div className={styles.Products__filters}>
             <Dropdown
@@ -29,19 +29,71 @@ const Products: React.FC<ProductsInterface> = ({ error, data }) => {
               data={state.data!.vendors}
               filters={filters}
             />
-            <FormGroup check inline>
-              <Label check>
-                <Input
-                  onChange={(e) =>
-                    dispatchFilters({
-                      type: FiltersTypes.SORT_BY_PRICE,
-                      sortByPrice: e.target.checked,
-                    })
-                  }
-                  type="checkbox"
-                />{" "}
-                Posortuj wg ceny
-              </Label>
+            <FormGroup tag="fieldset">
+              <legend>Sortuj po cenie</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    onChange={() =>
+                      dispatchFilters({
+                        type: FiltersTypes.SORT_BY_PRICE,
+                        sortByPrice: "ASC",
+                      })
+                    }
+                  />{" "}
+                  Sortuj rosnąco
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    onChange={() =>
+                      dispatchFilters({
+                        type: FiltersTypes.SORT_BY_PRICE,
+                        sortByPrice: "DESC",
+                      })
+                    }
+                  />{" "}
+                  Sortuj malejąco
+                </Label>
+              </FormGroup>
+            </FormGroup>
+            <FormGroup tag="fieldset">
+              <legend>Sortuj po producencie</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    onChange={() =>
+                      dispatchFilters({
+                        type: FiltersTypes.SORT_BY_VENDOR,
+                        sortByVendor: "ASC",
+                      })
+                    }
+                  />{" "}
+                  Sortuj rosnąco
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    name="radio1"
+                    onChange={() =>
+                      dispatchFilters({
+                        type: FiltersTypes.SORT_BY_VENDOR,
+                        sortByVendor: "DESC",
+                      })
+                    }
+                  />{" "}
+                  Sortuj malejąco
+                </Label>
+              </FormGroup>
             </FormGroup>
           </div>
           <div className={styles.Products__offers}>

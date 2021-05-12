@@ -3,14 +3,16 @@ import { FiltersTypes } from "./FiltersTypes";
 export const initialState = {
   category: "*",
   vendor: "*",
-  sortByPrice: false,
+  sortByPrice: "",
+  sortByVendor: "",
   searchingStarted: false,
 };
 
 export type State = {
   category?: string;
   vendor?: string;
-  sortByPrice?: boolean;
+  sortByPrice?: string;
+  sortByVendor?: string;
   searchingStarted: boolean;
 };
 
@@ -18,7 +20,8 @@ export type Action = {
   type: string;
   category?: string;
   vendor?: string;
-  sortByPrice?: boolean;
+  sortByPrice?: string;
+  sortByVendor?: string;
 };
 
 export const reducer = (state: State, action: Action) => {
@@ -40,6 +43,13 @@ export const reducer = (state: State, action: Action) => {
         ...state,
         searchingStarted: true,
         sortByPrice: action.sortByPrice,
+        sortByVendor: "",
+      };
+    case FiltersTypes.SORT_BY_VENDOR:
+      return {
+        ...state,
+        searchingStarted: true,
+        sortByVendor: action.sortByVendor,
       };
     default:
       return state;
